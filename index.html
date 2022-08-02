@@ -1,100 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>Cat or Dog ai predictor</title>
+		<link rel="stylesheet" href="https://unpkg.com/mvp.css">
+	</head>
+	<body>
+		<a href="https://github.com/nuvic/predict_image"><img loading="lazy" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_left_green_007200.png?resize=149%2C149" class="attachment-full size-full" alt="GitHub code" data-recalc-dims="1"></a>
+		<header>
+			<h1>Zebra or a zebra crossing?</h1>
+			<h2>A deep learning model will predict that for you</h2>
+			<p>Api hosted <a href="https://hf.space/embed/Asteriks/Zebra_crossing/+" target="_blank">here</a> (Hugging face). Webpage inspired by 
+			<a href="https://github.com/nuvic/predict_image">nuvic</a></p>
 
-/*
- * Reads the selected image file,
- * shows the image file on the page,
- * calls the API with the image file in base64 string,
- * records the prediction (label) of the API
-
- References to JS functionality:
- * FileReader (allows reading of file content): https://developer.mozilla.org/en-US/docs/Web/API/FileReader
- * Element.innerHTML (replace content within HTML block): https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
- * Fetch (making API call): https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
- * getElementById (retrieve the html element with specific id): https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementById
- */
-
-function onFileSelected(event) {
-	const selectedFile = event.target.files[0];
-	const reader = new FileReader();
-
-	const imgtag = document.getElementById("myImage");
-	imgtag.title = selectedFile.name;
-
-	reader.onload = function(event) {
-		// set the div element with "id=myImage" to show the uploaded image file
-		imgtag.src = event.target.result;
-	};
-
-	reader.readAsDataURL(selectedFile);
-
-	const predictionEl = document.getElementById('prediction')
-		const confidencesEl = document.getElementById('confidences')
-		const errorEl = document.getElementById('error')
-
-		reader.addEventListener("loadend", function() {             
-				// Make a API call by passing our image
-				//fetch('https://hf.space/embed/jph00/testing/+/api/predict/', {
-				fetch('https://hf.space/embed/Asteriks/Zebra_crossing/+/api/predict', {
-method: "POST",
-// reader.result is the base64 string of the uploaded image
-body: JSON.stringify({"data": [reader.result]}),
-headers: { "Content-Type": "application/json" } })
-				.then(function(response) {
-						if (response.status != 200) {
-						// early return if the api errors out and show error message
-						errorEl.innerHTML = '<u>Sorry the API is not working currently. Please try again later</u>'
-						predictionEl.innerHTML = '';
-						confidencesEl.innerHTML = '';
-						return;
-						}
-						return response.json(); })
-				.then(function(json_response) {
-						// json_response has this format:
-						// {
-						//   "data": [
-						//     {
-						//       "label": "Cat",
-						//       "confidences": [
-						//         {
-						//           "label": "Cat",
-						//           "confidence": 1
-						//         },
-						//         {
-						//           "label": "Dog",
-						//           "confidence": 2.430905149281037e-15
-						//         }
-						//       ]
-						//     }
-						//   ],
-						//   "flag_index": null,
-						//   "updated_state": null,
-						//   "durations": [
-						//     0.04598379135131836
-						//   ],
-						//   "avg_durations": [
-						//     0.16849387327829995
-						//   ]
-						// }
-
-					const label = json_response?.data[0]?.label;
-
-					// Get the confidences for zebra and zebra_crossing
-					// firstLabel and secondLabel are zebra and zebra_crossing
-					// the order changes depending on the category predicted,
-					// that's why the variable names are not fixed to zebraLabel/zebra_crossingLabel
-					const firstLabel = json_response?.data[0]?.confidences[0]?.label;
-					const firstLabelConfidence = json_response?.data[0]?.confidences[0]?.confidence
-						const secondLabel = json_response?.data[0]?.confidences[1]?.label;
-					const secondLabelConfidence = json_response?.data[0]?.confidences[1]?.confidence
-
-						// show the prediction
-						predictionEl.innerHTML = `🎉 <u>Prediction: ${label}</u> 🎉`
-						confidencesEl.innerHTML = `Confidence:<br>
-						${firstLabel}: ${firstLabelConfidence}<br>
-						${secondLabel}: ${secondLabelConfidence}`
-						errorEl.innerHTML = '';
-					return;
-				})
-		});
-}
-
-//https://hf.space/embed/jph00/testing/api
+			<a href="https://github.com/nuvic/predict_image" target="_blank">Github Repo</a>
+		</header>
+		<main>
+			<header>
+				<h2>Submit a picture</h2>
+				<p id="prediction"></p>
+				<p id="confidences"></p>
+				<p id="error"></p>
+			</header>
+			<section>
+				<img id="myImage" height="400" width="400">
+				<form id="form">
+					<label for="fileInput"></label>
+					<input id="fileInput" type="file" onchange="onFileSelected(event)" name="File">
+				</form>
+			</section>
+		</main>
+		<script src="index.js"></script>
+	</body>
+</html>
